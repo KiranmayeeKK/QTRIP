@@ -4,6 +4,8 @@ import config from "../conf/index.js";
 function getCityFromURL(search) {
   // TODO: MODULE_ADVENTURES
   // 1. Extract the city id from the URL's Query Param and return it
+  const params = new URLSearchParams(search);
+  return params.get("city");
 
 }
 
@@ -11,13 +13,41 @@ function getCityFromURL(search) {
 async function fetchAdventures(city) {
   // TODO: MODULE_ADVENTURES
   // 1. Fetch adventures using the Backend API and return the data
-
+  try {
+    const res = await fetch(config.backendEndpoint+"/adventures?city="+city);
+    const adventureList = await res.json();
+    return adventureList;
+  }
+  catch(err) {
+    return null;
+  }
 }
 
 //Implementation of DOM manipulation to add adventures for the given city from list of adventures
 function addAdventureToDOM(adventures) {
   // TODO: MODULE_ADVENTURES
   // 1. Populate the Adventure Cards and insert those details into the DOM
+  const rowElem = document.getElementById("data");
+  adventures.forEach(adv => {
+  rowElem.innerHTML+=      ` <div class="col-6 col-lg-3 mb-4 align-items-stretch">
+  <a href="detail/?adventure=${adv.id}" id="${adv.id}">
+  <div class="card activity-card">
+  <div class="category-banner">${adv.category}</div>
+  <img src="${adv.image}" alt="${adv.name}"/>
+  <div class="container card-body w-100 d-flex flex-column" >
+  <div class="row justify-content-between pb-2">
+  <div class="col-6 card-text" style="flex-basis:content">${adv.name}</div>
+  <div class="col-6 card-text" style="flex-basis:content">₹${adv.costPerHead}</div>
+  </div>
+  <div class="row justify-content-between">
+  <div class="col-6 card-text" style="flex-basis:content" >Duration</div>
+  <div class="col-6 card-text" style="flex-basis:content">${adv.duration}hours</div>
+  </div>
+  </div>
+</div>
+</a>
+</div>`
+  });
 
 }
 
@@ -79,6 +109,26 @@ function generateFilterPillsAndUpdateDOM(filters) {
   // 1. Use the filters given as input, update the Duration Filter value and Generate Category Pills
 
 }
+
+async function addAdventureToDB(event, city) {
+  const postBody =` {
+    "city": "${city}"
+  }`
+  console.log(postBody);
+  const res = await addPostToServer(postBody);
+  console.log(await res.json());
+}
+
+async function addPostToServer(dataObject) {
+  const res = await fetch(config.backendEndpoint+"/adventures/new", {
+      method: "POST",
+      body: dataObject,
+      headers: {
+      "Content-type": "application/json; charset=UTF-8"
+      }
+  });
+  return res;
+}
 export {
   getCityFromURL,
   fetchAdventures,
@@ -89,4 +139,5 @@ export {
   saveFiltersToLocalStorage,
   getFiltersFromLocalStorage,
   generateFilterPillsAndUpdateDOM,
+  addAdventureToDB,
 };

@@ -120,12 +120,11 @@ footer {
   border-radius: 8px;
   cursor: pointer;
   -webkit-transition: 0.2s all;
-  overflow: hidden;
-
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+  overflow:hidden;
 }
 .activity-card img {
   width: 100%;
@@ -191,15 +190,16 @@ footer {
   color: #fff;
   background: rgb(255, 145, 0);
   top: 0;
-  right: 0;
+  right: -8px;
   z-index: 1;
   margin-top: 16px;
-  margin-right: 8px;
+  margin-right: 0px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px 0px 0px 10px;
   font-weight: bolder;
+  overflow: visible !important;
 }
 
 .reserve-button {

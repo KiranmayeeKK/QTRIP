@@ -81,6 +81,9 @@
             </div>
             <!-- Display Adventures cards -->
             <div class="row" id="data"></div>
+            <div>
+                <button class="btn btn-warning" id="adv-btn" onclick="addAdventure(event)">Add new Adventure</button>
+            </div>
         </div>
     </div>
 
@@ -106,7 +109,8 @@
             filterFunction,
             saveFiltersToLocalStorage,
             getFiltersFromLocalStorage,
-            generateFilterPillsAndUpdateDOM
+            generateFilterPillsAndUpdateDOM,
+            addAdventureToDB
         } from "../../modules/adventures_page.js";
 
         // Declaring global variable adventure
@@ -133,8 +137,12 @@
              */
             let city = getCityFromURL(window.location.search);
 
+            console.log("getCityFromURL: " + city);
+
             //Fetches the adventures for the particular city
             adventures = await fetchAdventures(city);
+
+            console.log(adventures);
 
             //Applies filters on the adventures list
             let filteredAdventures = filterFunction(adventures, filters);
@@ -198,16 +206,24 @@
             // 1. Invoke saveFiltersToLocalStorage here
         }
 
+        function addAdventure(event) {
+            let city = getCityFromURL(window.location.search);
+            addAdventureToDB(event,city);
+        }
+
         //helper function
         function onlyUnique(value, index, self) {
             return self.indexOf(value) === index;
         }
 
+       
+        
         //registering module based functions in the DOM in order for them to work
         window.selectDuration = selectDuration;
         window.selectCategory = selectCategory;
         window.clearDuration = clearDuration;
         window.clearCategory = clearCategory;
+        window.addAdventure = addAdventure;
     </script>
 </body>
 
