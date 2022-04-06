@@ -124,7 +124,7 @@
                 ? getFiltersFromLocalStorage()
                 : { duration: "", category: [] };
 
-        console.log(filters);
+        console.log("filters read from local storage: ", filters);
         
         //entry point (executed when DOM is loaded)
         (async function () {
@@ -147,6 +147,8 @@
             //Applies filters on the adventures list
             let filteredAdventures = filterFunction(adventures, filters);
 
+            console.log("after filter", adventures);
+            console.log("filteredAdventures", filteredAdventures);
             //Updates the filtered adventures list to the DOM
             addAdventureToDOM(filteredAdventures)
 
@@ -160,7 +162,13 @@
             // TODO: MODULE_FILTERS
             // 1. Change the DOM to show the selected duration filter. Use the provided input event
             // 2. Invoke saveFiltersToLocalStorage here
-
+            document.getElementById("data").textContent = "";
+            document.getElementById("category-list").textContent = "";
+            filters["duration"] = event.target.value;
+            generateFilterPillsAndUpdateDOM(filters);
+            let filteredAdventures = filterFunction(adventures, filters);
+            addAdventureToDOM(filteredAdventures);
+            saveFiltersToLocalStorage(filters);
         }
 
         //executed when clear button is clicked on duration filter dropdown
@@ -168,7 +176,14 @@
             // TODO: MODULE_FILTERS
             // 1. Change the DOM to clear the Duration filter. Refer clearCategory() below
             // 2. Invoke saveFiltersToLocalStorage here
-
+            document.getElementById("data").textContent = "";
+            document.getElementById("category-list").textContent = "";
+            document.getElementById("duration-select").selectedIndex = 0;
+            filters["duration"] = "";
+            generateFilterPillsAndUpdateDOM(filters);
+            let filteredAdventures = filterFunction(adventures, filters);
+            addAdventureToDOM(filteredAdventures);
+            saveFiltersToLocalStorage(filters);
         }
 
 
@@ -191,17 +206,34 @@
 
             // TODO: MODULE_FILTERS
             // 1. Invoke saveFiltersToLocalStorage here
+            saveFiltersToLocalStorage(filters);
+        }
+        function removeCategory(event) {
+            console.log("remove Category", event.target.parentElement.id);
+            document.getElementById("data").textContent = "";
+            document.getElementById("category-list").textContent = "";
+         //   console.log("remove Category",typeof(filters["category"]));
+          /*  for( var i = 0; i < filters["category"].length; i++){ 
+                if(filters["category"][i] == event.target.parentElement.id)  
+                filters["category"].splice(i,1);
+            }*/
+          filters["category"] = filters["category"].filter(f => f!=event.target.parentElement.id);
+            console.log("filters array after removal" , filters);
+            generateFilterPillsAndUpdateDOM(filters);
+            let filteredAdventures = filterFunction(adventures, filters);
+            addAdventureToDOM(filteredAdventures);
+            saveFiltersToLocalStorage(filters);
         }
 
         //executed when clear button is clicked on category filter dropdown
         function clearCategory(event) {
             document.getElementById("data").textContent = "";
             document.getElementById("category-list").textContent = "";
-
+            document.getElementById("category-select").selectedIndex = 0;
             filters["category"] = [];
             let filteredAdventures = filterFunction(adventures, filters);
             addAdventureToDOM(filteredAdventures);
-
+            saveFiltersToLocalStorage(filters);
             // TODO: MODULE_FILTERS
             // 1. Invoke saveFiltersToLocalStorage here
         }
@@ -216,14 +248,13 @@
             return self.indexOf(value) === index;
         }
 
-       
-        
         //registering module based functions in the DOM in order for them to work
         window.selectDuration = selectDuration;
         window.selectCategory = selectCategory;
         window.clearDuration = clearDuration;
         window.clearCategory = clearCategory;
         window.addAdventure = addAdventure;
+        window.removeCategory = removeCategory;
     </script>
 </body>
 
