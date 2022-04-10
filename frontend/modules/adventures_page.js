@@ -97,8 +97,8 @@ if (filters.category.length!= 0) {
 function saveFiltersToLocalStorage(filters) {
   // TODO: MODULE_FILTERS
   // 1. Store the filters as a String to localStorage
+
   localStorage.setItem("filters", JSON.stringify(filters));
-  return true;
 }
 
 //Implementation of localStorage API to get filters from local storage. This should get called whenever the DOM is loaded.
