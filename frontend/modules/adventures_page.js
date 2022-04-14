@@ -34,7 +34,7 @@ function addAdventureToDOM(adventures) {
   <div class="card activity-card">
   <div class="category-banner">${adv.category}</div>
   <img src="${adv.image}" alt="${adv.name}"/>
-  <div class="container card-body w-100 d-flex flex-column" id ="activity-card-body">
+  <div class="container card-body w-100 d-flex flex-column">
   <div class="row justify-content-between pb-2">
   <h5 class="col-6 card-text" style="flex-basis:content">${adv.name}</h5>
   <p class="col-6 card-text" style="flex-basis:content">₹${adv.costPerHead}</p>
@@ -76,21 +76,40 @@ function filterFunction(list, filters) {
   // TODO: MODULE_FILTERS
   // 1. Handle the 3 cases detailed in the comments above and return the filtered list of adventures
   // 2. Depending on which filters are needed, invoke the filterByDuration() and/or filterByCategory() methods
-  console.log("filter function 1", list);
-  console.log("filter function: duration", filters.duration);
-console.log("filter function: category", filters.category);
   if(filters.duration!="") {
-    console.log("calling duration filter");
   const values = filters.duration.split("-");
   list = filterByDuration(list, parseInt(values[0]),parseInt(values[1]));
 }
 if (filters.category.length!= 0) {
-  console.log("calling category filter");
   list = filterByCategory(list, filters.category);
 }
-//console.log("filter function 2", list);
   // Place holder for functionality to work in the Stubs
   return list;
+}
+
+function updateCategoryFilter(adventures) {
+    const avlCategoryList = getAvailableCategories(adventures);
+    const categoryElem = document.getElementById("category-select");
+    Array.from(document.querySelector("#category-select").options).forEach(option => {
+        if(!avlCategoryList.includes(option.value))
+            option.disabled = true;
+        else
+            option.disabled = false;
+    });
+}
+
+function getAvailableCategories(adventures) {
+    const avlCategoryList = [];
+    adventures.forEach(adventure => {
+        avlCategoryList.push(adventure.category);
+    })
+
+    return avlCategoryList.filter(onlyUnique);
+
+}
+
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
 }
 
 //Implementation of localStorage API to save filters to local storage. This should get called everytime an onChange() happens in either of filter dropdowns
@@ -125,7 +144,6 @@ function generateFilterPillsAndUpdateDOM(filters) {
     categoryListDiv.innerHTML+=`<div class="category-filter" id="${f}">${f}
     <button class="btn-close-filter" id='close' onclick= "removeCategory(event)">x</button>
     </div>`;
-    console.log("badge added:"+ f);
   });
 }
 
@@ -134,11 +152,8 @@ async function addAdventureToDB(event, city) {
   const postBody =` {
     "city": "${city}"
   }`
-  console.log(postBody);
-  debugger;
   const res = await addPostToServer(postBody);
-  debugger;
-  console.log(await res.json());
+  window.location.reload();
 }
 
 async function addPostToServer(dataObject) {
@@ -149,7 +164,6 @@ async function addPostToServer(dataObject) {
       "Content-type": "application/json; charset=UTF-8"
       }
   });
-  debugger;
   return res;
 }
 export {
@@ -163,4 +177,5 @@ export {
   getFiltersFromLocalStorage,
   generateFilterPillsAndUpdateDOM,
   addAdventureToDB,
+  updateCategoryFilter
 };

@@ -72,6 +72,9 @@
                             Clear
                         </div>
                     </div>
+                    <div>
+                        <button class="btn btn-warning mx-4" id="adv-btn" onclick="addAdventure(event)">Add new Adventure</button>
+                    </div>
                 </div>
 
                 <!-- Section to display all selected categories  -->
@@ -81,9 +84,7 @@
             </div>
             <!-- Display Adventures cards -->
             <div class="row" id="data"></div>
-            <div>
-                <button class="btn btn-warning" id="adv-btn" onclick="addAdventure(event)">Add new Adventure</button>
-            </div>
+            
         </div>
     </div>
 
@@ -110,7 +111,8 @@
             saveFiltersToLocalStorage,
             getFiltersFromLocalStorage,
             generateFilterPillsAndUpdateDOM,
-            addAdventureToDB
+            addAdventureToDB,
+            updateCategoryFilter
         } from "../../modules/adventures_page.js";
 
         // Declaring global variable adventure
@@ -168,6 +170,7 @@
             generateFilterPillsAndUpdateDOM(filters);
             let filteredAdventures = filterFunction(adventures, filters);
             addAdventureToDOM(filteredAdventures);
+            updateCategoryFilter(filteredAdventures);
             saveFiltersToLocalStorage(filters);
         }
 
@@ -183,6 +186,7 @@
             generateFilterPillsAndUpdateDOM(filters);
             let filteredAdventures = filterFunction(adventures, filters);
             addAdventureToDOM(filteredAdventures);
+            updateCategoryFilter(filteredAdventures);
             saveFiltersToLocalStorage(filters);
         }
 
