@@ -7,8 +7,6 @@ function getAdventureIdFromURL(search) {
   const params = new URLSearchParams(search);
   return params.get("adventure");
 
-  // Place holder for functionality to work in the Stubs
-  return null;
 }
 //Implementation of fetch call with a paramterized input based on adventure ID
 async function fetchAdventureDetails(adventureId) {
@@ -97,6 +95,22 @@ function getCarouselOuterStructure() {
 function conditionalRenderingOfReservationPanel(adventure) {
   // TODO: MODULE_RESERVATIONS
   // 1. If the adventure is already reserved, display the sold-out message.
+  console.log("conditionalRenderingOfReservationPanel", adventure);
+  if(adventure.available)
+  {
+    const soldoutPanelElem = document.getElementById("reservation-panel-sold-out");
+    soldoutPanelElem.style.display = "none"; 
+    const reservationPanelElem = document.getElementById("reservation-panel-available");
+    reservationPanelElem.style.display = "block"; 
+    const costElem = document.getElementById("reservation-person-cost");
+    costElem.textContent = adventure.costPerHead;
+  }
+  else {
+    const reservationPanelElem = document.getElementById("reservation-panel-available");
+    reservationPanelElem.style.display = "none"; 
+    const soldoutPanelElem = document.getElementById("reservation-panel-sold-out");
+    soldoutPanelElem.style.display = "block"; 
+  }
 
 }
 
@@ -104,7 +118,8 @@ function conditionalRenderingOfReservationPanel(adventure) {
 function calculateReservationCostAndUpdateDOM(adventure, persons) {
   // TODO: MODULE_RESERVATIONS
   // 1. Calculate the cost based on number of persons and update the reservation-cost field
-
+  const totalCostElem = document.getElementById("reservation-cost");
+  totalCostElem.textContent = adventure.costPerHead*persons;
 }
 
 //Implementation of reservation form submission
@@ -112,13 +127,75 @@ function captureFormSubmit(adventure) {
   // TODO: MODULE_RESERVATIONS
   // 1. Capture the query details and make a POST API call using fetch() to make the reservation
   // 2. If the reservation is successful, show an alert with "Success!" and refresh the page. If the reservation fails, just show an alert with "Failed!".
+  const formElem = document.getElementById("myForm");
+  formElem.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formElement=formElem.elements
+    // debugger;
+    const data =  {
+      name: formElement["name"].value,
+      date: formElement["date"].value,
+      person: formElement["person"].value,
+      adventure: adventure.id
+    }
+    console.log(data);
+    // debugger;
+    const res = await fetch(config.backendEndpoint+"/reservations/new", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+      "Content-type": "application/json; charset=UTF-8"
+      }
+  });
+   
+ if(res.ok) {
+    console.log(res);
+    alert("Success!");
+    window.location.reload();
+
+  }
+  else {
+    alert("Failed");
+    window.location.reload();
+
+  }
+  /*
+  If this piece of code is used, then problem occurs with VS live server. The post req makes an update to db.json
+  file and this change causes the browser to restart. To confirm this update db.json manually and look whether the browser refresh or not
+  so. the alert message has to be shown before the vs server reloads the page. Hence res.ok is a quick way to
+  show alert */
+
+  /* const jsonData = await res.json();
+ console.log(jsonData);
+  if(jsonData.body.success == true) {
+    window.alert("success");
+  }
+  else
+  {
+    window.alert("failed");
+  }*/
+
+  } )
+}
+
+async function sendReservationData(dataObject) {
+  const res = await fetch(config.backendEndpoint+"/reservations/new", {
+      method: "POST",
+      body: dataObject,
+      headers: {
+      "Content-type": "application/json; charset=UTF-8"
+      }
+  });
+  return res;
 }
 
 //Implementation of success banner after reservation
 function showBannerIfAlreadyReserved(adventure) {
   // TODO: MODULE_RESERVATIONS
   // 1. If user has already reserved this adventure, show the reserved-banner, else don't
-
+  const bannerElem = document.getElementById("reserved-banner");
+  adventure.reserved ? bannerElem.style.display= "block" : bannerElem.style.display= "none";
+  
 }
 
 export {

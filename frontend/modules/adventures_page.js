@@ -34,14 +34,14 @@ function addAdventureToDOM(adventures) {
   <div class="card activity-card">
   <div class="category-banner">${adv.category}</div>
   <img src="${adv.image}" alt="${adv.name}"/>
-  <div class="container card-body w-100 d-flex flex-column" >
+  <div class="container card-body w-100 d-flex flex-column" id ="activity-card-body">
   <div class="row justify-content-between pb-2">
-  <div class="col-6 card-text" style="flex-basis:content">${adv.name}</div>
-  <div class="col-6 card-text" style="flex-basis:content">₹${adv.costPerHead}</div>
+  <h5 class="col-6 card-text" style="flex-basis:content">${adv.name}</h5>
+  <p class="col-6 card-text" style="flex-basis:content">₹${adv.costPerHead}</p>
   </div>
   <div class="row justify-content-between">
-  <div class="col-6 card-text" style="flex-basis:content" >Duration</div>
-  <div class="col-6 card-text" style="flex-basis:content">${adv.duration}hours</div>
+  <h5 class="col-6 card-text" style="flex-basis:content" >Duration</h5>
+  <p class="col-6 card-text" style="flex-basis:content">${adv.duration}hours</p>
   </div>
   </div>
 </div>
@@ -135,7 +135,9 @@ async function addAdventureToDB(event, city) {
     "city": "${city}"
   }`
   console.log(postBody);
+  debugger;
   const res = await addPostToServer(postBody);
+  debugger;
   console.log(await res.json());
 }
 
@@ -147,6 +149,7 @@ async function addPostToServer(dataObject) {
       "Content-type": "application/json; charset=UTF-8"
       }
   });
+  debugger;
   return res;
 }
 export {
